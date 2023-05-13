@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Implementation-Title: thunderhack
+MixinConfigs: mixins.thunderhack.json
+Implementation-Version: 1.12.2
+FMLCorePluginContainsFMLMod: true
+Implementation-Timestamp: 2023-03-27T00:27:37+0300
+TweakClass: org.spongepowered.asm.launch.MixinTweaker
+ForceLoadAsMod: true
+

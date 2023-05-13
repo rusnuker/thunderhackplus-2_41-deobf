@@ -1,0 +1,59 @@
+//Deobfuscated with https://github.com/SimplyProgrammer/Minecraft-Deobfuscator3000 using mappings "E:\rusherhack"!
+
+//Decompiled by Procyon!
+
+package com.mrzak34.thunderhack.modules.render;
+
+import com.mrzak34.thunderhack.modules.*;
+import com.mrzak34.thunderhack.util.*;
+import com.mrzak34.thunderhack.setting.*;
+import net.minecraftforge.fml.common.eventhandler.*;
+import com.mrzak34.thunderhack.events.*;
+import net.minecraft.util.math.*;
+import com.mrzak34.thunderhack.util.render.*;
+
+public class ChorusESP extends Module
+{
+    private final Setting<Integer> time;
+    private final Setting<Boolean> box;
+    private final Setting<Boolean> outline;
+    private final Setting<Float> lineWidth;
+    private final Timer timer;
+    private final Setting<ColorSetting> outlineColor;
+    private final Setting<ColorSetting> boxColor;
+    private double x;
+    private double y;
+    private double z;
+    
+    public ChorusESP() {
+        super("ChorusESP", "\u0440\u0435\u043d\u0434\u0435\u0440\u0438\u0442 \u0437\u0432\u0443\u043a \u0445\u043e\u0440\u0443\u0441\u0430", Module.Category.RENDER);
+        this.time = (Setting<Integer>)this.register(new Setting("Duration", (T)500, (T)50, (T)3000));
+        this.box = (Setting<Boolean>)this.register(new Setting("Box", (T)true));
+        this.outline = (Setting<Boolean>)this.register(new Setting("Outline", (T)true));
+        this.lineWidth = (Setting<Float>)this.register(new Setting("LineWidth", (T)1.0f, (T)0.1f, (T)5.0f, v -> this.outline.getValue()));
+        this.timer = new Timer();
+        this.outlineColor = (Setting<ColorSetting>)this.register(new Setting("OutlineColor", (T)new ColorSetting(575714484)));
+        this.boxColor = (Setting<ColorSetting>)this.register(new Setting("BoxColor", (T)new ColorSetting(575714484)));
+    }
+    
+    @SubscribeEvent
+    public void onChorus(final ChorusEvent event) {
+        this.x = event.getChorusX();
+        this.y = event.getChorusY();
+        this.z = event.getChorusZ();
+        this.timer.reset();
+    }
+    
+    public void onRender3D(final Render3DEvent render3DEvent) {
+        if (this.timer.passedMs(this.time.getValue())) {
+            return;
+        }
+        final AxisAlignedBB pos = RenderUtil.interpolateAxis(new AxisAlignedBB(this.x - 0.3, this.y, this.z - 0.3, this.x + 0.3, this.y + 1.8, this.z + 0.3));
+        if (this.outline.getValue()) {
+            RenderUtil.drawBlockOutline(pos, this.outlineColor.getValue().getColorObject(), this.lineWidth.getValue());
+        }
+        if (this.box.getValue()) {
+            RenderUtil.drawFilledBox(pos, this.boxColor.getValue().getRawColor());
+        }
+    }
+}
